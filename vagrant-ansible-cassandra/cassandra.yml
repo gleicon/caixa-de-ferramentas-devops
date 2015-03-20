@@ -1,0 +1,10 @@
+- hosts: all
+  sudo: True
+  user: vagrant
+  vars:
+    - java_versions: oracle-java7-installer
+  roles:
+    - common
+    - python
+    - java
+    - cassandra

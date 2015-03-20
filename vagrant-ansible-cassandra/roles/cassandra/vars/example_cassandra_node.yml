@@ -1,0 +1,8 @@
+# copy/edit one for each node
+
+cluster_name: 'Vagrant Cluster',
+num_tokens: 256
+# initial_token:  # only if you are not using vnodes
+seeds: 
+listen_address: 
+rpc_address: 

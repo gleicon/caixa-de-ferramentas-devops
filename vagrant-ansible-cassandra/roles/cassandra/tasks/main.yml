@@ -1,0 +1,34 @@
+- name: "add datastax cassandra debian repository"
+  apt_repository: repo='deb http://debian.datastax.com/community stable main'
+ 
+- name: "Add datastax repo key"
+  apt_key: url=http://debian.datastax.com/debian/repo_key
+
+- name: "Install cassandra"
+  apt: name=dsc21 state=latest update_cache=yes install_recommends=yes
+ 
+- name: "Install cassandra-tools"
+  apt: name=cassandra-tools state=latest update_cache=yes install_recommends=yes
+ 
+- name: "Troca /etc/cassandra.yaml" 
+  template: src=cassandra.yaml.j2 dest=/etc/cassandra/cassandra.yaml
+
+- name: "Restart cassandra"
+  service: name=cassandra state=restarted
+
+- name: stop cassandra
+  service: name=cassandra state=stopped
+
+- name: clear test data
+  shell: rm -rf /var/lib/cassandra/data/system/*
+
+- name: clear test data
+  shell: rm -rf /var/lib/cassandra/data/system_data/*
+
+- name: start cassandra
+  service: name=cassandra state=started
+
+- name: "Pausa para voltar o node de Cassandra"
+  pause: seconds=30
+
+
