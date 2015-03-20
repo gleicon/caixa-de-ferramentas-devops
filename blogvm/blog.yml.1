@@ -1,0 +1,31 @@
+- hosts: all
+  sudo: True
+  user: vagrant
+  tasks:
+    - name: "Atualiza pacotes e instala nginx"
+      apt: name=nginx state=latest update_cache=yes install_recommends=yes
+
+    - name: "Instala PHP-FPM"
+      apt: name=php5-fpm state=latest install_recommends=yes
+
+    - name: "Instala MySQL"
+      apt: name=mysql-server state=latest install_recommends=yes
+    
+    - name: "Cria diretório /opt/wordpress"
+      shell: mkdir -p /opt/wordpress
+
+    - name: "Copia configuração de blog.nginx para /etc/nginx/sites-available/blog"
+      copy: src=blog.nginx dest=/etc/nginx/sites-available/blog 
+
+    - name: "Ativa o site"
+      shell: ln -fs /etc/nginx/sites-available/blog /etc/nginx/sites-enabled/blog
+    
+    - name: "Apaga o site default"
+      shell: rm -f /etc/nginx/sites-enabled/default
+
+    - name: "Reinicia o NGINX"
+      shell: service nginx restart
+
+    - name: "Cria uma pagina de teste do PHP"
+      copy: src=test.php dest=/opt/wordpress
+    

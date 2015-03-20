@@ -1,0 +1,41 @@
+- name: "Instala MySQL"
+  apt: name=mysql-server state=latest install_recommends=yes
+
+- name: "Inicia MySQL"
+  service: name=mysql state=started enabled=true
+
+- name: "Cria .my.cnf"
+  template: src=my.cnf.j2 dest=~/.my.cnf mode=0600
+
+- name: "Cria senha de root para root@mysql"
+  mysql_user: name=root
+      password="{{ mysql_root_password }}"
+      check_implicit_admin=yes
+      priv="*.*:ALL,GRANT"
+      state=present
+  with_items:
+  - "{{ ansible_hostname }}"
+  - 127.0.0.1
+  - ::1
+  - localhost
+
+- name: "Cria wordpress database"
+  mysql_db: name=wordpress 
+      login_user=root
+      login_password="{{ mysql_root_password }}"
+      state=present
+
+- name: "Cria usuário wordpress"
+  mysql_user: name="{{ mysql_wp_user }}"
+      password="{{ mysql_wp_password}}"
+      priv="{{ wordpress_db_name }}".*:ALL
+      check_implicit_admin=yes
+      login_user=root
+      login_password="{{ mysql_root_password }}"
+      state=present
+  with_items:
+  - "{{ ansible_hostname }}"
+  - 127.0.0.1
+  - ::1
+  - localhost
+
