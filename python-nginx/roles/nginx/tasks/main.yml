@@ -1,0 +1,15 @@
+- name: "Atualiza pacotes e instala nginx"
+  apt: name=nginx state=latest update_cache=yes install_recommends=yes
+
+- name: "Copia configuração de app.nginx para /etc/nginx/sites-available/app"
+  template: src=app.nginx dest=/etc/nginx/sites-available/app
+
+- name: "Apaga o site default"
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: "Ativa o site"
+  file: src=/etc/nginx/sites-available/app dest=/etc/nginx/sites-enabled/app state=link
+
+- name: "Reinicia NGINX"
+  service: name=nginx state=restarted
+
