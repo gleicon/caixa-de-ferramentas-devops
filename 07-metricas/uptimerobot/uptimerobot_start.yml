@@ -1,0 +1,10 @@
+- hosts: localhost
+  connection: local
+  vars_files:
+    - vars/uptimerobot_creds.yml
+
+  tasks:
+  - name: "Inicia a monitoração do item "
+    uptimerobot: monitorid="{{ monitor_id }}"
+      apikey="{{ api_key }}"
+      state=started

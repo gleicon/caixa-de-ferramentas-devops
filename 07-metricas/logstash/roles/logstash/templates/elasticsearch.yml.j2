@@ -1,0 +1,5 @@
+cluster.name: "{{ cluster_name }}"
+node.name: "{{ ansible_hostname }}"
+http.cors.allow-origin: "/.*/"
+http.cors.enabled: true
+network.host: "{{ ansible_eth1.ipv4.address }}"

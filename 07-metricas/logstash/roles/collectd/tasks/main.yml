@@ -1,0 +1,11 @@
+- name: "Instala collectd e collectd-utils"
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - collectd
+    - collectd-utils
+
+- name: "Troca /etc/collectd/collectd.conf"
+  template: src=collectd.conf.j2 dest=/etc/collectd/collectd.conf
+
+- name: "reinicia collectd"
+  service: name=collectd state=restarted

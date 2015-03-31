@@ -1,0 +1,47 @@
+# For each instance where collectd is running, we define 
+# hostname proper to that instance. When metrics from
+# multiple instances are aggregated, hostname will tell 
+# us were they came from.
+
+Hostname "{{ ansible_hostname }}"
+
+# Fully qualified domain name, false for our little lab
+FQDNLookup false
+
+# Plugins we are going to use with their configurations,
+# if needed
+LoadPlugin cpu
+
+LoadPlugin df
+<Plugin df>
+        Device "/dev/sda1"
+        MountPoint "/"
+        FSType "ext4"
+        ReportReserved true
+</Plugin>
+
+LoadPlugin interface
+<Plugin interface>
+        Interface "eth0"
+        Interface "eth1"
+        IgnoreSelected false
+</Plugin>
+
+LoadPlugin network
+<Plugin network>
+  <Server "{{ ansible_eth1.ipv4.address }}" "25826">
+  </Server>
+</Plugin>
+
+LoadPlugin memory
+
+LoadPlugin syslog
+<Plugin syslog>
+        LogLevel info
+</Plugin>
+
+LoadPlugin swap
+
+<Include "/etc/collectd/collectd.conf.d">
+        Filter "*.conf"
+</Include>

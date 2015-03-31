@@ -1,0 +1,14 @@
+- name: "Cria o diretório /opt/app se ele não existe"
+  file: dest=/opt/app mode=755 state=directory owner=www-data
+
+- name: "Copia o arquivo http_server.py para /opt/app"
+  copy: src=http_server.py dest=/opt/app/
+
+- name: "Cria a entrada app para o supervisord"
+  template: src=app.conf dest=/etc/supervisor/conf.d/
+
+- name: "Reinicia supervisord"
+  service: name=supervisor state=restarted
+
+- name: "Inicia a aplicação"
+  supervisorctl: name=app state=started

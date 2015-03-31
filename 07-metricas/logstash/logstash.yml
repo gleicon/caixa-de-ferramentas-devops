@@ -1,0 +1,12 @@
+- hosts: all
+  sudo: True
+  vars:
+    - java_versions: oracle-java8-installer
+    - cluster_name: "dashboard"
+  roles:
+    - common
+    - python
+    - java
+    - collectd
+    - logstash
+

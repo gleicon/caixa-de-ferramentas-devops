@@ -1,0 +1,15 @@
+input {
+  udp {
+    port => 25826         
+    buffer_size => 1452   
+    codec => collectd { } 
+    type => "collectd"
+  }
+}
+output {
+  elasticsearch {
+    cluster => "{{ cluster_name }}" 
+    protocol => "http"
+    host => "{{ ansible_eth1.ipv4.address }}:9200"
+  }
+}

@@ -1,0 +1,17 @@
+- name: install python-related packages debian/ubuntu
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - python
+    - python-dev
+    - python-setuptools
+
+- name: install pip
+  easy_install: name=pip
+
+- name: install virtualenv
+  pip: name=virtualenv
+
+- name: install elasticsearch lib
+  pip: name=elasticsearch
+
+
