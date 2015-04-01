@@ -1,6 +1,6 @@
 # Exemplos do livro Caixa de Ferramentas para DevOps
 
-Os exemplos estão organizados por capítulos. Exceto aonde notado, eles podem ser executados com 
+Os exemplos estão organizados por capítulos. Exceto indicação contraria ou ausencia do Vagrantfile, eles podem ser executados com 
 
 ```
 $ vagrant up
