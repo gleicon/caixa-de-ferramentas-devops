@@ -47,8 +47,11 @@ Lembre de trocar o username quando executar fora do Vagrant nos playbooks.
 	- aws_hosts.ini é um arquivo que contém apenas:
 		[local]
 		localhost
+	- Se Durante o processo de instalação você não quiser receber mensagens 
+	  de confirmação de chave publica (Are you sure you want to continue connecting (yes/no)?) 
+	  execute o comando $ export ANSIBLE_HOST_KEY_CHECKING=False antes de executar o Ansible
 
-	- para removar o cluster vá ao painel do EC2 ou use $ ansible-playbook -i ./ec2.py remove_maquina.yml
+	- Para removar o cluster vá ao painel do EC2 ou use $ ansible-playbook -i ./ec2.py remove_maquina.yml
 
 ## Vagrant
 	- Certifique-se de que o Vagrant, Ansible e VirtualBox estejam instalados
