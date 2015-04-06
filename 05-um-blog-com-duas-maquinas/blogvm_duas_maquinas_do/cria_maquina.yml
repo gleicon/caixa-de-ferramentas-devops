@@ -1,0 +1,22 @@
+- hosts: all
+  connection: local
+  user: ubuntu
+
+  tasks:
+    - name: "Cria uma máquina na DigitalOcean"
+      digital_ocean: state=present 
+        command=droplet 
+        name=testevm 
+        size_id={{ do_size_id }}
+        region_id={{ do_region_id }}
+        image_id={{ do_image_id }}
+        ssh_key_ids={{ do_ssh_key_ids }}
+        virtio=yes
+      register: testvm
+
+    - name: "Id da máquina"
+      debug: msg="{{ testvm.droplet.id }}"
+
+    - name: "IP da máquina"
+      debug: msg="{{ testvm.droplet.ip_address }}"
+

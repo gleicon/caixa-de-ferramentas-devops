@@ -2,3 +2,5 @@ vars/mysql.yml
 *~
 .vagrant
 tokens
+credenciais
+group_vars/all

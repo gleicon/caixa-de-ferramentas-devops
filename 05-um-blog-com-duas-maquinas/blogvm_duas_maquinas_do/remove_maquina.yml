@@ -1,0 +1,11 @@
+- hosts: all
+  connection: local
+  user: ubuntu
+
+  tasks:
+    - name: "Remove uma máquina na DigitalOcean"
+      digital_ocean: state=deleted
+        id=4747155
+        command=droplet 
+        name=testevm 
+      

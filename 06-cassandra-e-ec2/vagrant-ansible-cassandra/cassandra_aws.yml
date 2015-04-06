@@ -1,4 +1,3 @@
-# Cria uma máquina
 - hosts: localhost
   connection: local
 

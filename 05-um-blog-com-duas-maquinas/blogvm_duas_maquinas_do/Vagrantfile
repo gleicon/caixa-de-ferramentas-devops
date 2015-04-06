@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  config.vm.define "web" do |webvm|
+    webvm.vm.box = "ubuntu/trusty64"
+    webvm.vm.network :private_network, ip: "192.168.33.23"
+    
+    webvm.vm.provision "ansible" do |ansible|
+          ansible.playbook = "blog.yml"
+	  ansible.verbose = "vvv"
+	  ansible.groups = {
+	    "web" => ["192.168.33.23"],
+	    "db" =>  ["192.168.33.24"],
+          }
+	  ansible.limit = "web"
+    end
+  end
+  
+  config.vm.define "db" do |dbvm|
+    dbvm.vm.box = "ubuntu/trusty64"
+    dbvm.vm.network :private_network, ip: "192.168.33.24"
+    
+    dbvm.vm.provision "ansible" do |ansible|
+          ansible.playbook = "blog.yml"
+	  ansible.verbose = "vvv"
+	  ansible.groups = {
+	    "web" => ["192.168.33.23"],
+	    "db" =>  ["192.168.33.24"],
+	 }
+	  ansible.limit = "db"
+    end
+  end
+
+  config.vm.provider "virtualbox" do |v|
+    v.customize ["modifyvm", :id, "--memory", "1024"]
+  end
+
+end
