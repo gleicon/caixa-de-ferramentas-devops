@@ -1,0 +1,14 @@
+- name: install python-related packages debian/ubuntu
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - python
+    - python-dev
+    - python-setuptools
+    - python-pycurl
+    - bpython
+
+- name: install pip
+  easy_install: name=pip
+
+- name: install docker-py
+  pip: name=docker-py
