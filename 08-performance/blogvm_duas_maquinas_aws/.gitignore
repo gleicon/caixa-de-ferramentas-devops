@@ -1,0 +1,6 @@
+vars/mysql.yml
+*~
+.vagrant
+tokens
+aws_credenciais
+group_vars/all

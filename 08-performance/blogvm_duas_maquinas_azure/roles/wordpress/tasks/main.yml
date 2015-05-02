@@ -1,0 +1,9 @@
+- name: "Download do Wordpress"
+  get_url: url=https://wordpress.org/latest.tar.gz dest=/tmp/latest.tar.gz
+
+- name: "Abre wordpress em /opt/wordpress"
+  unarchive: src=/tmp/latest.tar.gz dest=/opt copy=no 
+
+- name: "Corrige permissões"
+  file: path=/opt/wordpress recurse=yes owner=www-data group=www-data
+

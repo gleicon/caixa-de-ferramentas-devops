@@ -1,0 +1,7 @@
+## Instalar máquinas
+	$ export ANSIBLE_HOST_KEY_CHECKING=False
+	$ ansible-playbook -i aws_hosts.ini wordpress_aws.yml  --private-key ~/.ssh/aws_devel.pem
+
+## Remover máquinas
+	ansible-playbook -i ec2.py remove_maquina.yml --private-key ~/.ssh/aws_devel.pem
+

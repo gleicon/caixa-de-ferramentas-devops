@@ -1,0 +1,123 @@
+- hosts: all
+  connection: local
+  user: ubuntu
+
+  tasks:
+  - name: "Cria security group"
+    ec2_group:
+      name: wordpress_group
+      description: "Wordpress Security group"
+      vpc_id: "{{vpc_id}}"
+      region: "{{aws_region}}"
+      rules:
+        - proto: tcp
+          type: ssh
+          from_port: 22
+          to_port: 22
+          cidr_ip: 0.0.0.0/0
+
+        - proto: tcp
+          type: http
+          from_port: 80
+          to_port: 80
+          cidr_ip: 0.0.0.0/0
+
+        - proto: tcp
+          type: Custom TCP Rule
+          from_port: 1024
+          to_port: 65535
+          cidr_ip: "{{ cidr_ip }}"
+
+      rules_egress:
+        - proto: all
+          type: all
+          cidr_ip: 0.0.0.0/0
+    register: ec2_firewall
+
+  - name: "Cria a maquina web"
+    local_action: ec2 key_name="{{ssh_key_name}}"
+      count=1
+      vpc_subnet_id="{{subnet_id}}"
+      region="{{aws_region}}"
+      group_id="{{ec2_firewall.group_id}}"
+      instance_type="{{instance_type}}"
+      image="{{ami_id}}"
+      wait=yes
+      assign_public_ip=yes
+    register: web
+
+  - name: "Cria a maquina db"
+    local_action: ec2 key_name="{{ssh_key_name}}"
+      count=1
+      vpc_subnet_id="{{subnet_id}}"
+      region="{{aws_region}}"
+      group_id="{{ec2_firewall.group_id}}"
+      instance_type="{{instance_type}}"
+      image="{{ami_id}}"
+      wait=yes
+      assign_public_ip=yes
+    register: db
+
+  - name: "Adiciona tag web"
+    local_action: ec2_tag resource="{{ item.id }}" region="{{ aws_region }}" state=present
+    with_items: web.instances
+    args:
+      tags:
+        node_type: web
+
+  - name: "Adiciona tag db"
+    local_action: ec2_tag resource="{{ item.id }}" region="{{ aws_region }}" state=present
+    with_items: db.instances
+    args:
+      tags:
+        node_type: db
+
+  - name: "Espera confirmação antes de seguir, verificando a porta 22"
+    wait_for: port=22 host="{{ item.public_ip }}" search_regex=OpenSSH delay=30
+    with_items: web.instances
+
+  - name: "Espera confirmação antes de seguir, verificando a porta 22"
+    wait_for: port=22 host="{{ item.public_ip }}" search_regex=OpenSSH delay=30
+    with_items: db.instances
+
+  - name: "Adiciona host ao grupo instancias web"
+    add_host: hostname="{{ item.public_ip }}" groupname=instancias_web
+    with_items: web.instances
+
+  - name: "Debug web"
+    debug: msg="WEB Public ip address {{ item.public_ip }} private IP address {{ item.private_ip }}"
+    with_items: web.instances
+
+  - name: "Adiciona host ao grupo instancias db"
+    add_host: hostname="{{ item.public_ip }}" groupname=instancias_db
+    with_items: db.instances
+  
+  - name: "Debug db"
+    debug: msg="DB Public ip address {{ item.public_ip }} private IP address {{ item.private_ip }}"
+    with_items: db.instances
+  
+  - name: "Adiciona host ao grupo db_private_ips"
+    add_host: hostname="{{ item.private_ip}}" groupname=db_private_ips
+    with_items: db.instances
+
+- hosts: instancias_web
+  sudo: True
+  user: ubuntu
+  vars:
+    - db_host: "{{ groups['db_private_ips'][0] }}"
+  vars_files:
+    - vars/mysql.yml
+  roles:
+    - common
+    - php
+    - nginx
+    - wordpress
+
+- hosts: instancias_db
+  sudo: True
+  user: ubuntu
+  vars_files:
+    - vars/mysql.yml
+  roles:
+    - common
+    - mysql

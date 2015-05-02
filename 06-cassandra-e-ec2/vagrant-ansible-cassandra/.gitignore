@@ -3,3 +3,4 @@ vagrant_ansible_inventory*
 aws_credentials
 ec2.py
 ec2.ini
+group_vars/all
