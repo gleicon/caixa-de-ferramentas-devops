@@ -1,0 +1,19 @@
+db:
+  image: mysql:latest
+  expose:
+    - "3306"
+  ports:
+    - "3307:3306"
+  environment:
+    MYSQL_DATABASE: wordpress
+    MYSQL_USER: wordpress
+    MYSQL_PASSWORD: wordpress
+    MYSQL_ROOT_PASSWORD: aaa123
+web:
+  image: gleicon/php5-fpm-nginx
+  ports:
+    - "80:80"
+  links:
+    - db
+  volumes:
+    - ./wordpress:/app
