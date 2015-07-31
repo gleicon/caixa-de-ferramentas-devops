@@ -1,0 +1,15 @@
+- name: "Atualiza pacotes e instala nginx"
+  apt: name=nginx state=latest update_cache=yes install_recommends=yes
+
+- name: "Copia configuração de kibana para available-sites"
+  template: src=default.conf.j2 dest=/etc/nginx/sites-available/kibana
+
+- name: "Apaga o site default"
+  file: path=/etc/nginx/sites-enabled/default state=absent
+
+- name: "Ativa o site"
+  file: src=/etc/nginx/sites-available/kibana dest=/etc/nginx/sites-enabled/kibana state=link
+
+- name: "Reinicia NGINX"
+  service: name=nginx state=restarted
+

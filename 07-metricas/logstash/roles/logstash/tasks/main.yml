@@ -17,6 +17,9 @@
 - name: "Adiciona logstash.conf"
   template: src=logstash.conf.j2 dest=/etc/logstash/conf.d/logstash.conf
 
+- name: "Adiciona logstash-frontend service"
+  template: src=logstash-frontend dest=/etc/init.d mode=0751
+
 - name: "Adiciona elasticsearch.yml"
   template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml
 
@@ -26,7 +29,7 @@
 - name: "reinicia logstash"
   service: name=logstash state=restarted
 
-- name: "reinicia logstash-web"
-  service: name=logstash-web state=restarted
+- name: "inicia logstash web frontend"
+  service: name=logstash-frontend state=started
 
 
