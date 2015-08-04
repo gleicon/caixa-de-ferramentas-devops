@@ -32,4 +32,5 @@ Se quiser repetir apenas o provisionamento, use:
 $ vagrant provision
 ```
 
+Exemplos mais avançados com AWS e DigitalOcean precisam de chaves de API. Consulte o livro.
 
